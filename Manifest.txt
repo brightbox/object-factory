@@ -1,0 +1,9 @@
+History.txt
+Manifest.txt
+README.txt
+Rakefile
+bin/object-factory
+lib/object-factory.rb
+spec/object-factory_spec.rb
+spec/spec_helper.rb
+test/test_object-factory.rb
