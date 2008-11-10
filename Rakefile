@@ -18,7 +18,7 @@ PROJ.name = 'object-factory'
 PROJ.authors = 'Rahoul Baruah for Brightbox Systems Ltd'
 PROJ.email = 'support@brightbox.co.uk'
 PROJ.url = 'http://www.brightbox.co.uk/'
-PROJ.version = ObjectFactory::0.1
+PROJ.version = ObjectFactory::VERSION
 PROJ.rubyforge.name = 'object-factory'
 
 PROJ.spec.opts << '--color'

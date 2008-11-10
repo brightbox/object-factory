@@ -1,7 +1,4 @@
-
-require File.expand_path(
-    File.join(File.dirname(__FILE__), %w[.. lib object-factory]))
-
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib object-factory]))
 Spec::Runner.configure do |config|
   # == Mock Framework
   #
