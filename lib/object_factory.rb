@@ -165,3 +165,10 @@ alias an a
 def a_saved klass, parameters = {}
   Object.factory.create_and_save_a klass, parameters
 end
+
+# Short-cut method for Object::Factory#when_creating_a
+def when_creating_a klass, options = {}
+  Object.factory.when_creating_a klass, options
+end
+
+alias when_creating_an when_creating_a

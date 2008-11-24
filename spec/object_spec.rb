@@ -103,7 +103,7 @@ describe Object::Factory, "creating simple instances" do
       Object.factory.create_and_save_a(TestClass, :some => :values)
     }.should raise_error(Object::Factory::CannotSaveError)
   end
-
+  
   it "should allow 'a_saved' as a short-cut to creating and saving an object" do
     @test_instance = mock('Test Instance')
     TestClass.should_receive(:new).with({:some => :values}).and_return(@test_instance)
@@ -111,6 +111,16 @@ describe Object::Factory, "creating simple instances" do
     
     @created_instance = a_saved(TestClass, :some => :values)
   end
+end
+  
+describe Object::Factory, "configuring a class" do
+  it "should allow 'when_creating_a' as a short-cut to configuring a class" do
+    Object.factory.should_receive(:when_creating_a)
+    
+    when_creating_a TestClass, :auto_generate => :employee_code
+  end
+
+
 end
   
 describe Object::Factory, "creating instances with generated values" do
