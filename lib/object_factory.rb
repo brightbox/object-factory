@@ -40,7 +40,7 @@ class Object
     # Create a new instance of the given class with the given parameters, auto-generate the field values and then call save!
     def create_and_save_a klass, parameters = {}
       instance = create_a klass, parameters
-      instance.save!
+      raise CannotSaveError unless instance.save
       return instance
     end
     
@@ -82,6 +82,9 @@ class Object
         "#{klass.name.to_s}-#{field.to_s}-#{unique_integer}"
       end
     end
+    
+    #ÊError raised when create_and_save_a cannot save the object
+    class CannotSaveError < RuntimeError; end
     
     private
       

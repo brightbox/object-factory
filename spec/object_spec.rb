@@ -89,15 +89,25 @@ describe Object::Factory, "creating simple instances" do
   it "should auto-save the created object" do
     @test_instance = mock('Test Instance')
     TestClass.should_receive(:new).with({:some => :values}).and_return(@test_instance)
-    @test_instance.should_receive(:save!).and_return(true)
+    @test_instance.should_receive(:save).and_return(true)
     
     @created_instance = Object.factory.create_and_save_a(TestClass, :some => :values)
+  end
+  
+  it "should raise an exception if the auto-saved object cannot be saved" do
+    @test_instance = mock('Test Instance')
+    TestClass.should_receive(:new).with({:some => :values}).and_return(@test_instance)
+    @test_instance.should_receive(:save).and_return(false)
+    
+    lambda { 
+      Object.factory.create_and_save_a(TestClass, :some => :values)
+    }.should raise_error(Object::Factory::CannotSaveError)
   end
 
   it "should allow 'a_saved' as a short-cut to creating and saving an object" do
     @test_instance = mock('Test Instance')
     TestClass.should_receive(:new).with({:some => :values}).and_return(@test_instance)
-    @test_instance.should_receive(:save!).and_return(true)
+    @test_instance.should_receive(:save).and_return(true)
     
     @created_instance = a_saved(TestClass, :some => :values)
   end
