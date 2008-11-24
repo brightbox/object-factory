@@ -14,10 +14,10 @@ See the wiki page at http://github.com/rahoulb/object-factory/wikis/home for the
 
 However, it works something like this: 
 
-  Object.factory.when_creating_a Person, :auto_generate => :employee_code
+  when_creating_a Person, :auto_generate => :employee_code
  
-  @person = a Person, :first_name => 'John', :last_name => 'Smith', :employee_code => '12345'
-  puts @person.employee_code # will show 12345
+  @person = a Person, :first_name => 'John', :last_name => 'Smith'
+  puts @person.employee_code # will show a unique auto-generated value
   
 And your options are: 
 
