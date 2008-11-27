@@ -10,7 +10,7 @@ If you don't use the a_saved method then it should work with any type of model, 
   
 == Usage
 
-See the wiki page at http://github.com/rahoulb/object-factory/wikis/home for the latest docs.  
+See the wiki page at http://github.com/rahoulb/object-factory/wikis/home for the latest docs.
 
 However, it works something like this: 
 
@@ -26,6 +26,12 @@ And your options are:
 * :generate_email_address => :email: generates a randomised email address for the given field name or array of field names
 * :set => { :field3 => 'value3', :field4 => 'value4' }: sets the given fields to the supplied static values
 * :generate => { :field5 => lambda { Date.today } }: sets the given fields to the supplied dynamic values
+
+== Rails
+
+To use this with rails, stick the following in your +environment.rb+:
+
+  config.gem "rahoulb-object-factory", :lib => "object_factory", :source => "http://gems.github.com"
 
 == Released under the MIT Licence
 
