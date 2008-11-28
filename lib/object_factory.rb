@@ -4,7 +4,7 @@ require 'rujitsu'
 class Object
   # return an instance of an Object::Factory
   def self.factory
-    @@object_factory ||= Factory.new
+    THE_OBJECT_FACTORY_INSTANCE
   end
   
   # Factory allows test suites to build new instances of objects, specifying some simple constraints on certain fields
@@ -86,6 +86,16 @@ class Object
     #ÊError raised when create_and_save_a cannot save the object
     class CannotSaveError < RuntimeError; end
     
+    # print the rules for a given class
+    def print_configuration_for klass
+      fields_and_generators = @generators[symbol_for(klass)]
+      unless fields_and_generators.nil? 
+        fields_and_generators.each do | field_name, generator | 
+          puts "#{field_name} uses a lambda"
+        end
+      end
+    end
+    
     private
       
     def symbol_for object
@@ -149,6 +159,7 @@ class Object
       end
     end
   end
+  
 end
 
 # Short-cut method for Object::Factory#create_a
@@ -172,3 +183,5 @@ def when_creating_a klass, options = {}
 end
 
 alias when_creating_an when_creating_a
+
+THE_OBJECT_FACTORY_INSTANCE = Object::Factory.new
