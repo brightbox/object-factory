@@ -55,7 +55,8 @@ class Object
     def when_creating_a klass, options = {}
       need_to_generate_values_for klass, options[:auto_generate] unless options[:auto_generate].nil?
       need_to_confirm_values_for klass, options[:auto_confirm] unless options[:auto_confirm].nil? 
-      need_to_generate_email_addresses_for klass, options[:generate_email_address] unless options[:generate_email_address].nil? 
+      need_to_generate_email_addresses_for klass, options[:generate_email_address] unless options[:generate_email_address].nil?
+      need_to_generate_ip_addresses_for klass, options[:generate_ip_address] unless options[:generate_ip_address].nil?
       need_to_set_values_for klass, options[:set] unless options[:set].nil? 
       need_to_set_generators_for klass, options[:generate] unless options[:generate].nil?
     end
@@ -119,6 +120,17 @@ class Object
       fields = [fields] unless fields.respond_to?(:each)
       fields.each do | field |
         add_generator_for klass, field, lambda { 6.random_letters + '@' +  10.random_letters + '.com' }
+      end
+    end
+    
+    def need_to_generate_ip_addresses_for klass, fields
+      fields = [fields] unless fields.respond_to?(:each)
+      fields.each do | field |
+        add_generator_for klass, field, lambda {
+          octs = []
+          4.times { octs << 1.random_numbers(:to => 255) }
+          octs.join(".")
+        }
       end
     end
     

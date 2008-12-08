@@ -266,6 +266,27 @@ describe Object::Factory, "generating email addresses" do
   end
 end
 
+describe Object::Factory, "generating ip addresses" do
+  before :each do
+    Object.factory.reset
+  end
+  
+  it "should generate a random ip address for a configured field" do
+    Object.factory.when_creating_a TestClass, :generate_ip_address => :field
+    
+    @instance = Object.factory.create_a TestClass
+    @instance.field.should match(/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/)
+  end
+  
+  it "should generate a random ip address for multiple configured fields" do
+    Object.factory.when_creating_a TestClass, :generate_ip_address => [:field, :another_field]
+    
+    @instance = Object.factory.create_a TestClass
+    @instance.field.should match(/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/)
+    @instance.another_field.should match(/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/)
+  end
+end
+
 describe Object::Factory, "using lambdas to generate values" do
   before :each do
     Object.factory.reset
