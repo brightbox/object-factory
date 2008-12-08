@@ -24,6 +24,7 @@ And your options are:
 * :auto_generate => [:field1, :field2]: generates a unique string value for the given field name or array of field names
 * :auto_confirm => :password: generates a unique string value for the given field name or array of field names and also sets field_name_confirmation to the same value
 * :generate_email_address => :email: generates a randomised email address for the given field name or array of field names
+* :generate_ip_address => :ip: generates a randomised ip address for the given field name or array of field names
 * :set => { :field3 => 'value3', :field4 => 'value4' }: sets the given fields to the supplied static values
 * :generate => { :field5 => lambda { Date.today } }: sets the given fields to the supplied dynamic values
 
