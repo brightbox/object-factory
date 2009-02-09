@@ -6,11 +6,11 @@ If you don't use the a_saved method then it should work with any type of model, 
 
 == Install
 
-  gem install rahoulb-object-factory --source http://gems.github.com/
+  gem install brightbox-object-factory --source http://gems.github.com/
   
 == Usage
 
-See the wiki page at http://github.com/rahoulb/object-factory/wikis/home for the latest docs.
+See the wiki page at http://github.com/brightbox/object-factory/wikis/home for the latest docs.
 
 However, it works something like this: 
 
@@ -32,7 +32,7 @@ And your options are:
 
 To use this with rails, stick the following in your +environment.rb+:
 
-  config.gem "rahoulb-object-factory", :lib => "object_factory", :source => "http://gems.github.com"
+  config.gem "brightbox-object-factory", :lib => "object_factory", :source => "http://gems.github.com"
 
 == Released under the MIT Licence
 

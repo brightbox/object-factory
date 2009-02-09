@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = ["CHANGELOG", "lib/object_factory.rb", "README.rdoc", "tasks/rspec.rake"]
   s.files = ["CHANGELOG", "init.rb", "lib/object_factory.rb", "Manifest", "object-factory.gemspec", "Rakefile", "README.rdoc", "spec/object_spec.rb", "spec/spec.opts", "tasks/rspec.rake"]
   s.has_rdoc = true
-  s.homepage = %q{http://github.com/rahoub/object-factory}
+  s.homepage = %q{http://github.com/brightbox/object-factory}
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Object-factory", "--main", "README.rdoc"]
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{object-factory}
@@ -24,11 +24,11 @@ Gem::Specification.new do |s|
     s.specification_version = 2
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<rahoulb-rujitsu>, [">= 0"])
+      s.add_runtime_dependency(%q<brightbox-rujitsu>, [">= 0"])
     else
-      s.add_dependency(%q<rahoulb-rujitsu>, [">= 0"])
+      s.add_dependency(%q<brightbox-rujitsu>, [">= 0"])
     end
   else
-    s.add_dependency(%q<rahoulb-rujitsu>, [">= 0"])
+    s.add_dependency(%q<brightbox-rujitsu>, [">= 0"])
   end
 end
