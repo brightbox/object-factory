@@ -10,7 +10,7 @@ If you don't use the a_saved method then it should work with any type of model, 
   
 == Usage
 
-See the wiki page at http://github.com/brightbox/object-factory/wikis/home for the latest docs.
+See the wiki page at http://github.com/brightbox/object-factory/wikis/home for the latest docs.  In particular, http://wiki.github.com/brightbox/object-factory/usage-with-rails-rspec-and-cucumber is a pretty good example of how to get started.  
 
 However, it works something like this: 
 
