@@ -97,6 +97,7 @@ describe Object::Factory, "creating simple instances" do
   it "should raise an exception if the auto-saved object cannot be saved" do
     @test_instance = mock('Test Instance')
     TestClass.should_receive(:new).with({:some => :values}).and_return(@test_instance)
+    @test_instance.should_receive(:errors).and_return(['errors'])
     @test_instance.should_receive(:save).and_return(false)
     
     lambda { 
@@ -298,5 +299,23 @@ describe Object::Factory, "using lambdas to generate values" do
     @instance = Object.factory.create_a TestClass
     @instance.field.should == 'poop'
     @instance.another_field.should == Date.today.to_s
+  end
+end
+
+describe Object::Factory, "generating sequential numbers" do
+  before :each do
+    Object.factory.reset
+  end
+  
+  it "should generate a sequential number" do
+    first = Object.factory.next_number
+    second = Object.factory.next_number
+    
+    second.should == first + 1
+  end
+  
+  it "should use the shortcut to generate a sequential number" do
+    Object.factory.should_receive(:next_number).and_return(1)
+    number = a_number
   end
 end

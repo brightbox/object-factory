@@ -28,11 +28,17 @@ And your options are:
 * :set => { :field3 => 'value3', :field4 => 'value4' }: sets the given fields to the supplied static values
 * :generate => { :field5 => lambda { Date.today } }: sets the given fields to the supplied dynamic values
 
+If you want to generate a unique value yourself, you can use Object::Factory's next_number call (which has a simple shortcut a_number).  
+
+  :generate => { :field => "unique-value-#{a_number}" }
+
 == Rails
 
 To use this with rails, stick the following in your +environment.rb+:
 
   config.gem "brightbox-object-factory", :lib => "object_factory", :source => "http://gems.github.com"
+  
+Also check out http://wiki.github.com/brightbox/object-factory/usage-with-rails-rspec-and-cucumber for more information on integrating Object-Factory with your application.  
 
 == Released under the MIT Licence
 

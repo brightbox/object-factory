@@ -69,6 +69,11 @@ class Object
       @generator ||= ValueGenerator.new
     end
     
+    # Generate a unique Integer
+    def next_number
+      generator.unique_integer
+    end
+    
     # A simple class that generates unique values
     class ValueGenerator
       def initialize
@@ -84,7 +89,7 @@ class Object
       end
     end
     
-    #ÊError raised when create_and_save_a cannot save the object
+    #Â Error raised when create_and_save_a cannot save the object
     class CannotSaveError < RuntimeError; end
     
     # print the rules for a given class
@@ -195,5 +200,10 @@ def when_creating_a klass, options = {}
 end
 
 alias when_creating_an when_creating_a
+
+# Short-cut method for Object::Factory#next_number
+def a_number
+  Object.factory.next_number
+end
 
 THE_OBJECT_FACTORY_INSTANCE = Object::Factory.new
