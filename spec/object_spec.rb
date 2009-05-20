@@ -319,3 +319,19 @@ describe Object::Factory, "generating sequential numbers" do
     number = a_number
   end
 end
+
+describe Object::Factory, "cleaning up ActiveRecord models" do
+  before :each do
+    Object.factory.reset
+  end
+  
+  it "should delete all instances for registered classes" do
+    Object.factory.when_creating_a TestClass, :auto_confirm => :password, :clean_up => true
+    Object.factory.when_creating_an AnotherTestClass, :clean_up => true
+    
+    TestClass.should_receive(:delete_all).and_return(0)
+    AnotherTestClass.should_receive(:delete_all).and_return(0)
+    
+    Object.factory.clean_up
+  end
+end

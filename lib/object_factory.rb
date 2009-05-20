@@ -25,6 +25,14 @@ class Object
     def reset
       @confirmed_fields = {}
       @generators = {}
+      @classes_for_clean_up = []
+    end
+    
+    # clean up all instances
+    def clean_up
+      @classes_for_clean_up.each do | klass | 
+        klass.delete_all
+      end
     end
   
     # Create a new instance of the given class with the given parameters and apply the auto-generated fields, according to the configured rules
@@ -59,6 +67,7 @@ class Object
       need_to_generate_ip_addresses_for klass, options[:generate_ip_address] unless options[:generate_ip_address].nil?
       need_to_set_values_for klass, options[:set] unless options[:set].nil? 
       need_to_set_generators_for klass, options[:generate] unless options[:generate].nil?
+      register_for_clean_up klass if options[:clean_up]
     end
     
     alias :when_creating_an :when_creating_a
@@ -102,7 +111,7 @@ class Object
       end
     end
     
-    private
+  private
       
     def symbol_for object
       klass = object.is_a?(Class) ? object : object.class
@@ -174,6 +183,10 @@ class Object
         value = proc.call
         instance.send("#{field_name.to_sym}=".to_sym, value) unless parameters.has_key?(field_name.to_sym)
       end
+    end
+    
+    def register_for_clean_up klass
+      @classes_for_clean_up << klass
     end
   end
   

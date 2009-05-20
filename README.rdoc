@@ -32,6 +32,22 @@ If you want to generate a unique value yourself, you can use Object::Factory's n
 
   :generate => { :field => "unique-value-#{a_number}" }
 
+== Cleaning up
+
+(currently only for ActiveRecord)
+
+If you register your (ActiveRecord) class with the clean_up option, then the factory can ensure that all instances are deleted.  This is useful if you cannot use transactional_fixtures (for example using Watir or Culerity in your test suite).  
+
+Add a clean_up parameter when registering your classes: 
+  
+  when_creating_a Person, :auto_generate => [:first_name, :last_name], :clean_up => true
+  
+Then in your "after" section call: 
+
+  Object.factory.clean_up
+  
+This will call delete_all on any registered classes (hence it is currently ActiveRecord only).  
+
 == Rails
 
 To use this with rails, stick the following in your +environment.rb+:

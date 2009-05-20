@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{object-factory}
-  s.version = "0.1.4"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Brightbox Systems Ltd"]
-  s.date = %q{2008-12-08}
+  s.date = %q{2009-05-20}
   s.description = %q{A simple object factory to help you build valid objects in your tests}
   s.email = %q{hello@brightbox.co.uk}
   s.extra_rdoc_files = ["CHANGELOG", "lib/object_factory.rb", "README.rdoc", "tasks/rspec.rake"]
