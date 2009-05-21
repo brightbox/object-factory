@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.description = %q{A simple object factory to help you build valid objects in your tests}
   s.email = %q{hello@brightbox.co.uk}
   s.extra_rdoc_files = ["CHANGELOG", "lib/object_factory.rb", "README.rdoc", "tasks/rspec.rake"]
-  s.files = ["CHANGELOG", "init.rb", "lib/object_factory.rb", "Manifest", "object-factory.gemspec", "Rakefile", "README.rdoc", "spec/object_spec.rb", "spec/spec.opts", "tasks/rspec.rake"]
+  s.files = ["CHANGELOG", "github.rb", "init.rb", "lib/object_factory.rb", "Manifest", "object-factory.gemspec", "Rakefile", "README.rdoc", "spec/object_spec.rb", "spec/spec.opts", "tasks/rspec.rake"]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/brightbox/object-factory}
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Object-factory", "--main", "README.rdoc"]
