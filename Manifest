@@ -1,0 +1,11 @@
+CHANGELOG
+github.rb
+init.rb
+lib/object_factory.rb
+Manifest
+object-factory.gemspec
+Rakefile
+README.rdoc
+spec/object_spec.rb
+spec/spec.opts
+tasks/rspec.rake
