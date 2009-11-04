@@ -180,8 +180,10 @@ class Object
       fields_and_generators = @generators[symbol_for(instance)]
       return if fields_and_generators.nil?
       fields_and_generators.each do | field_name, proc | 
-        value = proc.call
-        instance.send("#{field_name.to_sym}=".to_sym, value) unless parameters.has_key?(field_name.to_sym)
+        unless parameters.has_key?(field_name.to_sym)
+          value = proc.call
+          instance.send("#{field_name.to_sym}=".to_sym, value)
+        end
       end
     end
     
