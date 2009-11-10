@@ -6,7 +6,7 @@ If you don't use the a_saved method then it should work with any type of model, 
 
 == Install
 
-  gem install brightbox-object-factory --source http://gems.github.com/
+  gem install object-factory
   
 == Usage
 
