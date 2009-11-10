@@ -52,7 +52,7 @@ This will call delete_all on any registered classes (hence it is currently Activ
 
 To use this with rails, stick the following in your +environment.rb+:
 
-  config.gem "brightbox-object-factory", :lib => "object_factory", :source => "http://gems.github.com"
+  config.gem "object-factory"
   
 Also check out http://wiki.github.com/brightbox/object-factory/usage-with-rails-rspec-and-cucumber for more information on integrating Object-Factory with your application.  
 
