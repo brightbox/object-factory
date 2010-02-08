@@ -5,7 +5,6 @@ Rakefile
 github.rb
 init.rb
 lib/object_factory.rb
-object-factory.gemspec
 spec/object_spec.rb
 spec/spec.opts
 tasks/rspec.rake
