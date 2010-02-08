@@ -28,7 +28,8 @@ class Object
       @classes_for_clean_up = []
     end
     
-    # clean up all instances
+    # clean up all instances - all classes that are registered for clean up have all instances deleted
+    # this is useful if you cannot use transactions to tidy up after each test
     def clean_up
       @classes_for_clean_up.each do | klass | 
         klass.delete_all
@@ -60,6 +61,7 @@ class Object
     # * :generate_email_address specifies a field name or array of field names that are set to be randomised email addresses
     # * :set specifies a Hash of field names and fixed values
     # * :generate specifies a Hash of field names and lambdas that are used to generate a dynamic value
+    # * :clean_up specifies whether the class should be registered for clean up (the default is true)
     def when_creating_a klass, options = {}
       need_to_generate_values_for klass, options[:auto_generate] unless options[:auto_generate].nil?
       need_to_confirm_values_for klass, options[:auto_confirm] unless options[:auto_confirm].nil? 
@@ -67,7 +69,7 @@ class Object
       need_to_generate_ip_addresses_for klass, options[:generate_ip_address] unless options[:generate_ip_address].nil?
       need_to_set_values_for klass, options[:set] unless options[:set].nil? 
       need_to_set_generators_for klass, options[:generate] unless options[:generate].nil?
-      register_for_clean_up klass if options[:clean_up]
+      register_for_clean_up klass unless options[:clean_up] == false
     end
     
     alias :when_creating_an :when_creating_a
