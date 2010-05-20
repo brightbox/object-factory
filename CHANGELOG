@@ -1,3 +1,7 @@
+= Version 0.2.5 (2010-05-20)
+
+clean_up ignores the default_scope when deleting all records
+
 = Version 0.2.4 (2010-02-08)
 
 Altered the options so that :clean_up => true is now the default
