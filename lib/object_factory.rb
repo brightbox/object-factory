@@ -31,8 +31,11 @@ class Object
     # clean up all instances - all classes that are registered for clean up have all instances deleted
     # this is useful if you cannot use transactions to tidy up after each test
     def clean_up
-      @classes_for_clean_up.each do | klass | 
-        klass.delete_all
+      @classes_for_clean_up.each do | klass |
+        next unless klass.ancestors.include?(ActiveRecord::Base) && klass.respond_to?(:with_exclusive_scope) && klass.respond_to?(:delete_all)
+        klass.send(:with_exclusive_scope) do
+          klass.delete_all
+        end
       end
     end
   
