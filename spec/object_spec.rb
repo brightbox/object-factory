@@ -321,11 +321,43 @@ describe Object::Factory, "generating sequential numbers" do
 end
 
 describe Object::Factory, "cleaning up ActiveRecord models" do
+  unless defined?(ActiveRecord)
+    module ActiveRecord
+      class Base
+      end
+    end
+  end
+
   before :each do
     Object.factory.reset
   end
   
   it "should delete all instances for registered classes" do
+    # Quack like ActiveRecord::Base as if our lives depended on it.
+    # Easier than just depending on it? Probably.
+    [TestClass, AnotherTestClass].each do |klass|
+      klass.class_eval do
+        def self.ancestors
+          super | [ActiveRecord::Base]
+        end
+        def self.respond_to? meffod, *args
+          return true if meffod == :with_exclusive_scope || meffod == :delete_all
+          super
+        end
+        def self.with_exclusive_scope
+          yield
+        end
+      end
+    end
+
+    TestClass.ancestors.should include(ActiveRecord::Base)
+    TestClass.respond_to?(:with_exclusive_scope).should be_true
+    TestClass.respond_to?(:delete_all).should be_true
+
+    AnotherTestClass.ancestors.should include(ActiveRecord::Base)
+    AnotherTestClass.respond_to?(:with_exclusive_scope).should be_true
+    AnotherTestClass.respond_to?(:delete_all).should be_true
+
     Object.factory.when_creating_a TestClass, :auto_confirm => :password, :clean_up => true
     Object.factory.when_creating_an AnotherTestClass, :clean_up => true
     
