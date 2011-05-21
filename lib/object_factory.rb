@@ -11,7 +11,7 @@ class Object
   # If a new instance is created via the factory then that instance can have specialist values automatically applied to given fields, meaning that it should be possible for test cases to build valid objects without having to specify a full valid field-set
   # The factory should not be created directly, but instead accessed through the Object#factory method.  
   # Expected usage: 
-  #   Object.factory.configure Person, :auto_generate => [:email, :telephone], :auto_confirm => :password
+  #   Object.factory.when_creating_a Person, :auto_generate => [:email, :telephone], :auto_confirm => :password
   #   instance = a Person
   # instance will have a unique value for :email and :telephone and will ensure that :password and :password_confirmation have the same value.  
   class Factory
