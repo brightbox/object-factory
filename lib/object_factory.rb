@@ -46,12 +46,15 @@ class Object
       generate_confirmations_for instance, parameters
       generate_values_for instance, parameters
       
+      yield(instance) if block_given?
+      
       return instance
     end
     
     # Create a new instance of the given class with the given parameters, auto-generate the field values and then call save!
     def create_and_save_a klass, parameters = {}
-      instance = create_a klass, parameters
+      block = block_given? ? Proc.new : nil
+      instance = create_a klass, parameters, &block
       raise CannotSaveError, instance.errors.inspect unless instance.save
       return instance
     end
@@ -204,14 +207,16 @@ end
 #   instance = a Thingy
 #   another_instance = an OtherThingy
 def a klass, parameters = {}
-  Object.factory.create_a klass, parameters
+  block = block_given? ? Proc.new : nil
+  Object.factory.create_a klass, parameters, &block
 end
 
 alias an a
 
 # Short-cut method for Object::Factory#create_and_save_a
 def a_saved klass, parameters = {}
-  Object.factory.create_and_save_a klass, parameters
+  block = block_given? ? Proc.new : nil
+  Object.factory.create_and_save_a klass, parameters, &block
 end
 
 # Short-cut method for Object::Factory#when_creating_a
