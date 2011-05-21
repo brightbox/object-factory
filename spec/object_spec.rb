@@ -162,6 +162,31 @@ describe Object::Factory, "creating instances with generated values" do
     @instance = Object.factory.create_a TestClass, :field => nil
     @instance.field.should be_nil
   end
+
+end
+
+describe Object::Factory, "creating instances with overriden values using a block" do
+  before do
+    Object.factory.when_creating_a TestClass, :set => {:field => "fred"}
+  end
+
+  it "should allow you to override generated values using a block" do
+    @instance = Object.factory.create_a TestClass do |tc|
+      tc.field = "My override value"
+    end
+    @instance.field.should == "My override value"
+  end
+
+  it "should allow you to override generated values when creating using a block" do
+    test_klass = mock(TestClass, :save => true)
+    TestClass.should_receive(:new).with({}).and_return(test_klass)
+    test_klass.should_receive(:field=).with("My override value")
+
+    @instance = Object.factory.create_and_save_a TestClass do |tc|
+      tc.field = "My override value"
+    end
+    @instance.should == test_klass
+  end
 end
 
 describe Object::Factory, "creating instances with confirmed values" do
