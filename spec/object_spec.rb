@@ -170,23 +170,42 @@ describe Object::Factory, "creating instances with overriden values using a bloc
     Object.factory.when_creating_a TestClass, :set => {:field => "fred"}
   end
 
-  it "should allow you to override generated values using a block" do
-    @instance = Object.factory.create_a TestClass do |tc|
-      tc.field = "My override value"
+  context "with a do/end block" do
+    it "should allow you to override generated values using a block" do
+      @instance = Object.factory.create_a TestClass do |tc|
+        tc.field = "My override value"
+      end
+      @instance.field.should == "My override value"
     end
-    @instance.field.should == "My override value"
+
+    it "should allow you to override generated values when creating using a block" do
+      test_klass = mock(TestClass, :save => true)
+      TestClass.should_receive(:new).with({}).and_return(test_klass)
+      test_klass.should_receive(:field=).with("My override value")
+
+      @instance = Object.factory.create_and_save_a TestClass do |tc|
+        tc.field = "My override value"
+      end
+      @instance.should == test_klass
+    end
   end
 
-  it "should allow you to override generated values when creating using a block" do
-    test_klass = mock(TestClass, :save => true)
-    TestClass.should_receive(:new).with({}).and_return(test_klass)
-    test_klass.should_receive(:field=).with("My override value")
-
-    @instance = Object.factory.create_and_save_a TestClass do |tc|
-      tc.field = "My override value"
+  context "with an inline block" do
+    it "should allow you to override generated values using a block" do
+      @instance = Object.factory.create_a(TestClass) { |tc| tc.field = "My override value" }
+      @instance.field.should == "My override value"
     end
-    @instance.should == test_klass
+
+    it "should allow you to override generated values when creating using a block" do
+      test_klass = mock(TestClass, :save => true)
+      TestClass.should_receive(:new).with({}).and_return(test_klass)
+      test_klass.should_receive(:field=).with("My override value")
+
+      @instance = Object.factory.create_and_save_a(TestClass) { |tc| tc.field = "My override value" }
+      @instance.should == test_klass
+    end
   end
+
 end
 
 describe Object::Factory, "creating instances with confirmed values" do
