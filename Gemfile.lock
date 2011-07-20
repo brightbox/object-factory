@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    object-factory (0.2.5)
+    object-factory (0.2.6)
       rujitsu
 
 GEM

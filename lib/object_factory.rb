@@ -64,7 +64,7 @@ class Object
 
     def call_after_create instance
       defined_callbacks = @factory_callbacks[symbol_for(instance)]
-      if(!defined_callbacks.blank? && (callback = defined_callbacks[:after_create]))
+      if(defined_callbacks && !defined_callbacks.empty? && (callback = defined_callbacks[:after_create]))
         callback.call(instance)
       end
     end
