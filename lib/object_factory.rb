@@ -43,10 +43,9 @@ class Object
 
     # Create a new instance of the given class with the given parameters and apply the auto-generated fields, according to the configured rules
     def create_a klass, parameters = {}
-      instance = klass.new({})
+      instance = klass.new(parameters)
 
-      # assign them individually to by-pass protected attributes
-      parameters.each { |key,value| instance.send("#{key}=",value) }
+      override_values(instance,parameters.stringify_keys)
 
       generate_confirmations_for instance, parameters
       generate_values_for instance, parameters
@@ -54,6 +53,20 @@ class Object
       yield(instance) if block_given?
 
       return instance
+    end
+
+    def override_values(instance,parameters)
+      klass = instance.class
+      protected_keys = []
+      if !klass.accessible_attributes.blank?
+        protected_keys += parameters.keys - klass.accessible_attributes.to_a
+      end
+
+      if !klass.protected_attributes.blank?
+        protected_keys += parameters.keys & klass.accessible_attributes.to_a
+      end
+
+      protected_keys.each { |key| instance.send("#{key}=",parameters[key]) }
     end
 
     # Create a new instance of the given class with the given parameters, auto-generate the field values and then call save!

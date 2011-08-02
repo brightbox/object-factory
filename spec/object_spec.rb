@@ -1,8 +1,11 @@
 require File.expand_path(File.dirname(__FILE__) + '/../lib/object_factory.rb')
 require "active_record"
+require "active_support/core_ext/class/attribute_accessors"
 
 class TestClass
   attr_accessor :field, :another_field, :password, :password_confirmation, :other, :other_confirmation
+  cattr_accessor :accessible_attributes, :protected_attributes
+
   def initialize parameters = nil
     self.field = parameters[:field]
     self.another_field = parameters[:another_field]
@@ -12,7 +15,7 @@ class TestClass
 end
 
 class AnotherTestClass
-
+  cattr_accessor :accessible_attributes, :protected_attributes
 end
 
 class User < ActiveRecord::Base
@@ -71,29 +74,18 @@ describe Object::Factory, "creating simple instances" do
   end
 
   it "should create an instance of the given class with no provided parameters" do
-    @test_instance = mock('Test Instance')
-    TestClass.should_receive(:new).with({}).and_return(@test_instance)
-
     @created_instance = Object.factory.create_a(TestClass)
-    @created_instance.should == @test_instance
+    @created_instance.class.should == TestClass
   end
 
   it "should create an instance of the given class with the given parameters" do
-    @test_instance = mock('Test Instance')
-    @test_instance.should_receive("some=").with(:values)
-
-    TestClass.should_receive(:new).with({}).and_return(@test_instance)
-
     @created_instance = Object.factory.create_a(TestClass, :some => :values)
-    @created_instance.should == @test_instance
+    @created_instance.class.should == TestClass
   end
 
   it "should allow 'a' as a short-cut to creating objects" do
-    @test_instance = mock('Test Instance')
-    TestClass.should_receive(:new).with({}).and_return(@test_instance)
-
     @created_instance = a TestClass
-    @created_instance.should == @test_instance
+    @created_instance.class.should == TestClass
   end
 
   it "should allow 'an' as a short-cut to creating objects" do
