@@ -1,4 +1,5 @@
 require File.expand_path(File.dirname(__FILE__) + '/../lib/object_factory.rb')
+require "active_record"
 
 class TestClass
   attr_accessor :field, :another_field, :password, :password_confirmation, :other, :other_confirmation
@@ -13,6 +14,21 @@ end
 class AnotherTestClass
 
 end
+
+class User < ActiveRecord::Base
+  attr_accessible :status, :firstname,:lastname
+end
+
+ActiveRecord::Base.configurations = {
+  'db1' => {
+    :adapter  => 'sqlite3',
+    :encoding => 'utf8',
+    :database => 'object_tests',
+  }
+}
+
+ActiveRecord::Base.establish_connection('db1')
+
 
 describe Object, "with RSpec/Rails extensions" do
   describe "accessing the factory" do
@@ -64,7 +80,9 @@ describe Object::Factory, "creating simple instances" do
 
   it "should create an instance of the given class with the given parameters" do
     @test_instance = mock('Test Instance')
-    TestClass.should_receive(:new).with({:some => :values}).and_return(@test_instance)
+    @test_instance.should_receive("some=").with(:values)
+
+    TestClass.should_receive(:new).with({}).and_return(@test_instance)
 
     @created_instance = Object.factory.create_a(TestClass, :some => :values)
     @created_instance.should == @test_instance
@@ -88,7 +106,8 @@ describe Object::Factory, "creating simple instances" do
 
   it "should auto-save the created object" do
     @test_instance = mock('Test Instance')
-    TestClass.should_receive(:new).with({:some => :values}).and_return(@test_instance)
+    @test_instance.should_receive("some=").with(:values)
+    TestClass.should_receive(:new).with({}).and_return(@test_instance)
     @test_instance.should_receive(:save).and_return(true)
 
     @created_instance = Object.factory.create_and_save_a(TestClass, :some => :values)
@@ -96,7 +115,8 @@ describe Object::Factory, "creating simple instances" do
 
   it "should raise an exception if the auto-saved object cannot be saved" do
     @test_instance = mock('Test Instance')
-    TestClass.should_receive(:new).with({:some => :values}).and_return(@test_instance)
+    @test_instance.should_receive("some=").with(:values)
+    TestClass.should_receive(:new).with({}).and_return(@test_instance)
     @test_instance.should_receive(:errors).and_return(['errors'])
     @test_instance.should_receive(:save).and_return(false)
 
@@ -107,7 +127,8 @@ describe Object::Factory, "creating simple instances" do
 
   it "should allow 'a_saved' as a short-cut to creating and saving an object" do
     @test_instance = mock('Test Instance')
-    TestClass.should_receive(:new).with({:some => :values}).and_return(@test_instance)
+    @test_instance.should_receive("some=").with(:values)
+    TestClass.should_receive(:new).with({}).and_return(@test_instance)
     @test_instance.should_receive(:save).and_return(true)
 
     @created_instance = a_saved(TestClass, :some => :values)
@@ -347,6 +368,39 @@ describe Object::Factory, "invoking after create callback" do
 
     @instance = Object.factory.create_and_save_a AnotherTestClass
     t.should_not be_nil
+  end
+end
+
+describe Object::Factory, "Should by-pass mass-assignment protection" do
+  before(:each) do
+    Object.factory.reset
+    User.connection.drop_table('users') if User.connection.table_exists?(:users)
+    User.connection.create_table :users do |u|
+      u.string :status
+      u.string :firstname
+      u.string :lastname
+      u.string :gender
+      u.datetime :login_at
+      u.string :login
+      u.string :type
+    end
+  end
+
+  it "should be possible to override protected attributes" do
+    Object.factory.when_creating_a(User,
+      :generate => {
+        :status => lambda { 'active' },
+        :firstname => lambda { 'frodo' },
+        :lastname => lambda { 'baggins' },
+        :gender => lambda { 'male' },
+        :login => lambda { 'fg' }
+      }
+    )
+
+    user = Object.factory.create_and_save_a(User, :firstname => 'foo', :login => 'bar')
+    user.firstname.should == 'foo'
+    user.lastname.should == 'baggins'
+    user.login.should == 'bar'
   end
 end
 

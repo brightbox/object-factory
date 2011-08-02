@@ -3,3 +3,6 @@ doc/
 *.gem
 tmp/
 vendor/
+.bundle
+object_tests
+Gemfile.lock

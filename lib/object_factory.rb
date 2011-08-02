@@ -43,7 +43,10 @@ class Object
 
     # Create a new instance of the given class with the given parameters and apply the auto-generated fields, according to the configured rules
     def create_a klass, parameters = {}
-      instance = klass.new parameters
+      instance = klass.new({})
+
+      # assign them individually to by-pass protected attributes
+      parameters.each { |key,value| instance.send("#{key}=",value) }
 
       generate_confirmations_for instance, parameters
       generate_values_for instance, parameters
