@@ -57,16 +57,19 @@ class Object
 
     def override_values(instance,parameters)
       klass = instance.class
-      protected_keys = []
-      if !klass.accessible_attributes.blank?
+      protected_keys = Set.new()
+
+      if klass.respond_to?(:accessible_attributes) && !klass.accessible_attributes.blank?
         protected_keys += parameters.keys - klass.accessible_attributes.to_a
       end
 
-      if !klass.protected_attributes.blank?
-        protected_keys += parameters.keys & klass.accessible_attributes.to_a
+      if klass.respond_to?(:protected_attributes) && !klass.protected_attributes.blank?
+        protected_keys += parameters.keys & klass.protected_attributes.to_a
       end
 
-      protected_keys.each { |key| instance.send("#{key}=",parameters[key]) }
+      protected_keys.each do |key|
+        instance.send("#{key}=",parameters[key]) if instance.respond_to?("#{key}=")
+      end
     end
 
     # Create a new instance of the given class with the given parameters, auto-generate the field values and then call save!

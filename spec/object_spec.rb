@@ -23,6 +23,10 @@ class User < ActiveRecord::Base
   validates_presence_of :login
 end
 
+class Blog < ActiveRecord::Base
+  attr_protected :tag
+end
+
 ActiveRecord::Base.configurations = {
   'db1' => {
     :adapter  => 'sqlite3',
@@ -33,7 +37,7 @@ ActiveRecord::Base.configurations = {
 
 ActiveRecord::Base.establish_connection('db1')
 
-def create_user_table
+def create_tables
   User.connection.drop_table('users') if User.connection.table_exists?(:users)
   User.connection.create_table :users do |u|
     u.string :status
@@ -44,9 +48,16 @@ def create_user_table
     u.string :login
     u.string :type
   end
+
+  Blog.connection.drop_table('blogs') if User.connection.table_exists?(:blogs)
+  Blog.connection.create_table :blogs do |b|
+    b.string :title
+    b.string :content
+    b.string :tag
+  end
 end
 
-def define_user_factory
+def define_factories
   Object.factory.when_creating_a(User,
     :generate => {
       :status => lambda { 'active' },
@@ -54,6 +65,14 @@ def define_user_factory
       :lastname => lambda { 'baggins' },
       :gender => lambda { 'male' },
       :login => lambda { 'fg' }
+    }
+  )
+
+  Object.factory.when_creating_a(Blog,
+    :generate => {
+      :title => lambda { 'wheels of time' },
+      :content => lambda { 'wheels_of_time'},
+      :tag => lambda { 'fantasy' }
     }
   )
 end
@@ -96,8 +115,8 @@ describe Object::Factory, "creating simple instances" do
 
   before :each do
     Object.factory.reset
-    create_user_table()
-    define_user_factory()
+    create_tables()
+    define_factories()
   end
 
   it "should create an instance of the given class with no provided parameters" do
@@ -191,7 +210,7 @@ end
 describe Object::Factory, "creating instances with overriden values using a block" do
   before do
     Object.factory.when_creating_a TestClass, :set => {:field => "fred"}
-    create_user_table()
+    create_tables()
   end
 
   context "with a do/end block" do
@@ -203,7 +222,7 @@ describe Object::Factory, "creating instances with overriden values using a bloc
     end
 
     it "should allow you to override generated values when creating using a block" do
-      define_user_factory
+      define_factories
       @instance = Object.factory.create_and_save_a(User) do |tc|
         tc.firstname = "lannister"
       end
@@ -218,7 +237,7 @@ describe Object::Factory, "creating instances with overriden values using a bloc
     end
 
     it "should allow you to override generated values when creating using a block" do
-      define_user_factory
+      define_factories
       @instance = Object.factory.create_and_save_a(User) { |tc| tc.firstname = "lannister" }
       @instance.firstname.should == "lannister"
     end
@@ -370,18 +389,25 @@ describe Object::Factory, "invoking after create callback" do
   end
 end
 
-describe Object::Factory, "Should by-pass mass-assignment protection" do
+describe Object::Factory, "Should bypass mass-assignment protection" do
   before(:each) do
     Object.factory.reset
-    create_user_table()
+    create_tables()
+    define_factories
   end
 
-  it "should be possible to override protected attributes" do
-    define_user_factory
+  it "should be possible to override protected attributes via attr_accessible" do
     user = Object.factory.create_and_save_a(User, :firstname => 'foo', :login => 'bar')
     user.firstname.should == 'foo'
     user.lastname.should == 'baggins'
     user.login.should == 'bar'
+  end
+
+  it "should be possible to override protected attributes via attr_protected" do
+    blog = a_saved(Blog, :tag => "high_fantasy")
+    blog.title.should == "wheels of time"
+    blog.tag.should == "high_fantasy"
+    blog.content.should == "wheels_of_time"
   end
 end
 
