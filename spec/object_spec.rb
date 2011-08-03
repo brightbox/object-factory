@@ -20,6 +20,7 @@ end
 
 class User < ActiveRecord::Base
   attr_accessible :status, :firstname,:lastname
+  validates_presence_of :login
 end
 
 ActiveRecord::Base.configurations = {
@@ -32,6 +33,30 @@ ActiveRecord::Base.configurations = {
 
 ActiveRecord::Base.establish_connection('db1')
 
+def create_user_table
+  User.connection.drop_table('users') if User.connection.table_exists?(:users)
+  User.connection.create_table :users do |u|
+    u.string :status
+    u.string :firstname
+    u.string :lastname
+    u.string :gender
+    u.datetime :login_at
+    u.string :login
+    u.string :type
+  end
+end
+
+def define_user_factory
+  Object.factory.when_creating_a(User,
+    :generate => {
+      :status => lambda { 'active' },
+      :firstname => lambda { 'frodo' },
+      :lastname => lambda { 'baggins' },
+      :gender => lambda { 'male' },
+      :login => lambda { 'fg' }
+    }
+  )
+end
 
 describe Object, "with RSpec/Rails extensions" do
   describe "accessing the factory" do
@@ -71,6 +96,8 @@ describe Object::Factory, "creating simple instances" do
 
   before :each do
     Object.factory.reset
+    create_user_table()
+    define_user_factory()
   end
 
   it "should create an instance of the given class with no provided parameters" do
@@ -89,41 +116,26 @@ describe Object::Factory, "creating simple instances" do
   end
 
   it "should allow 'an' as a short-cut to creating objects" do
-    @test_instance = mock('Test Instance')
-    AnotherTestClass.should_receive(:new).with({}).and_return(@test_instance)
-
-    @created_instance = an AnotherTestClass
-    @created_instance.should == @test_instance
+    @created_instance = an User
+    @created_instance.firstname.should == "frodo"
   end
 
   it "should auto-save the created object" do
-    @test_instance = mock('Test Instance')
-    @test_instance.should_receive("some=").with(:values)
-    TestClass.should_receive(:new).with({}).and_return(@test_instance)
-    @test_instance.should_receive(:save).and_return(true)
+    @created_instance = a_saved User
+    @created_instance.firstname.should == "frodo"
 
-    @created_instance = Object.factory.create_and_save_a(TestClass, :some => :values)
+    @created_instance.new_record?.should == false
   end
 
   it "should raise an exception if the auto-saved object cannot be saved" do
-    @test_instance = mock('Test Instance')
-    @test_instance.should_receive("some=").with(:values)
-    TestClass.should_receive(:new).with({}).and_return(@test_instance)
-    @test_instance.should_receive(:errors).and_return(['errors'])
-    @test_instance.should_receive(:save).and_return(false)
-
     lambda {
-      Object.factory.create_and_save_a(TestClass, :some => :values)
+      @created_instance = a_saved(User, :login => nil)
     }.should raise_error(Object::Factory::CannotSaveError)
   end
 
   it "should allow 'a_saved' as a short-cut to creating and saving an object" do
-    @test_instance = mock('Test Instance')
-    @test_instance.should_receive("some=").with(:values)
-    TestClass.should_receive(:new).with({}).and_return(@test_instance)
-    @test_instance.should_receive(:save).and_return(true)
-
-    @created_instance = a_saved(TestClass, :some => :values)
+    @created_instance = a_saved User
+    @created_instance.firstname.should == "frodo"
   end
 end
 
@@ -179,6 +191,7 @@ end
 describe Object::Factory, "creating instances with overriden values using a block" do
   before do
     Object.factory.when_creating_a TestClass, :set => {:field => "fred"}
+    create_user_table()
   end
 
   context "with a do/end block" do
@@ -190,14 +203,11 @@ describe Object::Factory, "creating instances with overriden values using a bloc
     end
 
     it "should allow you to override generated values when creating using a block" do
-      test_klass = mock(TestClass, :save => true)
-      TestClass.should_receive(:new).with({}).and_return(test_klass)
-      test_klass.should_receive(:field=).with("My override value")
-
-      @instance = Object.factory.create_and_save_a TestClass do |tc|
-        tc.field = "My override value"
+      define_user_factory
+      @instance = Object.factory.create_and_save_a(User) do |tc|
+        tc.firstname = "lannister"
       end
-      @instance.should == test_klass
+      @instance.firstname.should == "lannister"
     end
   end
 
@@ -208,12 +218,9 @@ describe Object::Factory, "creating instances with overriden values using a bloc
     end
 
     it "should allow you to override generated values when creating using a block" do
-      test_klass = mock(TestClass, :save => true)
-      TestClass.should_receive(:new).with({}).and_return(test_klass)
-      test_klass.should_receive(:field=).with("My override value")
-
-      @instance = Object.factory.create_and_save_a(TestClass) { |tc| tc.field = "My override value" }
-      @instance.should == test_klass
+      define_user_factory
+      @instance = Object.factory.create_and_save_a(User) { |tc| tc.firstname = "lannister" }
+      @instance.firstname.should == "lannister"
     end
   end
 
@@ -366,29 +373,11 @@ end
 describe Object::Factory, "Should by-pass mass-assignment protection" do
   before(:each) do
     Object.factory.reset
-    User.connection.drop_table('users') if User.connection.table_exists?(:users)
-    User.connection.create_table :users do |u|
-      u.string :status
-      u.string :firstname
-      u.string :lastname
-      u.string :gender
-      u.datetime :login_at
-      u.string :login
-      u.string :type
-    end
+    create_user_table()
   end
 
   it "should be possible to override protected attributes" do
-    Object.factory.when_creating_a(User,
-      :generate => {
-        :status => lambda { 'active' },
-        :firstname => lambda { 'frodo' },
-        :lastname => lambda { 'baggins' },
-        :gender => lambda { 'male' },
-        :login => lambda { 'fg' }
-      }
-    )
-
+    define_user_factory
     user = Object.factory.create_and_save_a(User, :firstname => 'foo', :login => 'bar')
     user.firstname.should == 'foo'
     user.lastname.should == 'baggins'
