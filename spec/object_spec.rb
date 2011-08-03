@@ -409,6 +409,11 @@ describe Object::Factory, "Should bypass mass-assignment protection" do
     blog.tag.should == "high_fantasy"
     blog.content.should == "wheels_of_time"
   end
+
+  it "should be possible to define protected attributes" do
+    blog = a_saved Blog
+    blog.tag.should == "fantasy"
+  end
 end
 
 describe Object::Factory, "using lambdas to generate values" do
