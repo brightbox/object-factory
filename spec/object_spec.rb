@@ -2,6 +2,9 @@ require File.expand_path(File.dirname(__FILE__) + '/../lib/object_factory.rb')
 require "active_record"
 require "active_support/core_ext/class/attribute_accessors"
 
+# Have to connect before defining an AR model with attr_accessible in it
+ActiveRecord::Base.establish_connection(:adapter  => 'sqlite3', :encoding => 'utf8', :database => ':memory:')
+
 class TestClass
   attr_accessor :field, :another_field, :password, :password_confirmation, :other, :other_confirmation
   cattr_accessor :accessible_attributes, :protected_attributes
@@ -26,16 +29,6 @@ end
 class Blog < ActiveRecord::Base
   attr_protected :tag
 end
-
-ActiveRecord::Base.configurations = {
-  'db1' => {
-    :adapter  => 'sqlite3',
-    :encoding => 'utf8',
-    :database => 'object_tests',
-  }
-}
-
-ActiveRecord::Base.establish_connection('db1')
 
 def create_tables
   User.connection.drop_table('users') if User.connection.table_exists?(:users)
