@@ -440,13 +440,6 @@ describe Object::Factory, "generating sequential numbers" do
 end
 
 describe Object::Factory, "cleaning up ActiveRecord models" do
-  unless defined?(ActiveRecord)
-    module ActiveRecord
-      class Base
-      end
-    end
-  end
-
   before :each do
     Object.factory.reset
   end
@@ -456,9 +449,6 @@ describe Object::Factory, "cleaning up ActiveRecord models" do
     # Easier than just depending on it? Probably.
     [TestClass, AnotherTestClass].each do |klass|
       klass.class_eval do
-        def self.ancestors
-          super | [ActiveRecord::Base]
-        end
         def self.respond_to? meffod, *args
           return true if meffod == :with_exclusive_scope || meffod == :delete_all
           super
@@ -467,6 +457,8 @@ describe Object::Factory, "cleaning up ActiveRecord models" do
           yield
         end
       end
+      ancestors = klass.ancestors.dup
+      klass.stub!(:ancestors).and_return(ancestors|[ActiveRecord::Base])
     end
 
     TestClass.ancestors.should include(ActiveRecord::Base)
