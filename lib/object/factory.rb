@@ -29,7 +29,6 @@ class Object
 
     def when_creating_a klass, params={}
       params ||= {}
-      clean_up = params.delete(:clean_up) # todo: handle
       self.templates << Template.new({:klass => klass}.merge(params))
     end
     alias when_creating_an when_creating_a
@@ -42,6 +41,10 @@ class Object
       instance = create_a(*args, &block)
       raise CannotSaveError, instance.errors.inspect unless instance.save
       instance
+    end
+
+    def clean_up
+      templates.classes_for_cleaning.each &:delete_all
     end
   end
 end

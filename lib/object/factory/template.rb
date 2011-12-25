@@ -4,7 +4,7 @@ class Object
       extend Forwardable
       def_delegator :generator, :value_for
 
-      attr_accessor :klass, :generate, :set, :auto_generate, :auto_confirm, :generate_email_address, :generate_ip_address, :after_create
+      attr_accessor :klass, :generate, :set, :auto_generate, :auto_confirm, :generate_email_address, :generate_ip_address, :clean_up, :after_create
 
       autoload :InstanceBuilder, "object/factory/template/instance_builder"
 

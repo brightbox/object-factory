@@ -13,6 +13,10 @@ class Object
       def template_for klass
         find {|t| t.klass == klass } || Template.new(:klass => klass)
       end
+
+      def classes_for_cleaning
+        to_a.select {|t| t.clean_up }.map(&:klass)
+      end
     end
   end
 end
