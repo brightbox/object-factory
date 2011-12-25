@@ -4,13 +4,13 @@ module ObjectFactory
       __setobj__(Set.new)
     end
 
-    # Returns a Template object for the klass you're looking up.
+    # Returns a Template object for the klass/synonym you're looking up.
     # If there isn't one defined, it creates one on the fly for you, but doesn't
     # store it in the template collection
     #
     # @return Object::Factory::Template
-    def template_for klass
-      find {|t| t.klass == klass } || Template.new(:klass => klass)
+    def template_for klass, synonym
+      find {|t| t.klass == klass && t.synonym == synonym } || Template.new(:klass => klass, :synonym => synonym)
     end
 
     # Returns all the classes to delete records for when Factory#clean_up is invoked
@@ -20,7 +20,7 @@ module ObjectFactory
     def classes_for_cleaning
       __getobj__.to_a.select do |t|
         t.clean_up && t.klass.respond_to?(:with_exclusive_scope) && t.klass.respond_to?(:delete_all)
-      end.map(&:klass)
+      end.map(&:klass).uniq
     end
 
   end

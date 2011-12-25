@@ -38,8 +38,14 @@ module ObjectFactory
     end
     alias when_creating_an when_creating_a
 
-    def create_a klass, params={}, &block
-      templates.template_for(klass).create_instance_with(params, &block)
+    def create_a klass_or_synonym, *args, &block
+      klass, synonym, params = if klass_or_synonym.is_a?(Class)
+        [klass_or_synonym, nil, args.first]
+      else
+        [args.shift, klass_or_synonym, args.shift]
+      end
+
+      templates.template_for(klass, synonym).create_instance_with(params, &block)
     end
 
     def create_and_save_a *args, &block

@@ -3,19 +3,21 @@ module ObjectFactory
     extend Forwardable
     def_delegator :generator, :value_for
 
-    attr_accessor :klass, :generate, :set, :auto_generate, :auto_confirm, :generate_email_address, :generate_ip_address, :clean_up, :after_create
+    attr_accessor :klass, :synonym, :generate, :set, :auto_generate, :auto_confirm, :generate_email_address, :generate_ip_address, :clean_up, :after_create
 
     def initialize opts={}
       opts ||= {}
+      # :as is an optional shortcut for :synonym
+      opts[:synonym] ||= opts.delete(:as) if opts.has_key?(:as) # gnarly
       opts.each {|k,v| send "#{k}=", v }
     end
 
     def eql? obj
-      obj.respond_to?(:klass) && klass == obj.klass
+      obj.respond_to?(:klass) && obj.respond_to?(:synonym) && klass == obj.klass && synonym == obj.synonym
     end
 
     def hash
-      "#{klass}".hash
+      "#{klass}#{synonym}".hash
     end
 
     def create_instance_with params={}, &block
