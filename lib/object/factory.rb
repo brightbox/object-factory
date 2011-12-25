@@ -3,6 +3,7 @@ class Object
     include Singleton
     extend Forwardable
 
+    autoload :HelperMethods,      "object/factory/helper_methods"
     autoload :ValueGenerator,     "object/factory/value_generator"
 
     def_delegators :generator, :value_for, :unique_integer, :next_number, :a_number

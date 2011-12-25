@@ -6,4 +6,6 @@ class Object
 
   autoload :Factory, "object/factory"
 
+  include Factory::HelperMethods
+
 end
