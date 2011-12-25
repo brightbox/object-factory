@@ -7,13 +7,11 @@ ActiveRecord::Base.establish_connection(:adapter  => 'sqlite3', :encoding => 'ut
 
 class TestClass
   attr_accessor :field, :another_field, :password, :password_confirmation, :other, :other_confirmation
-  cattr_accessor :accessible_attributes, :protected_attributes
+  # cattr_accessor :accessible_attributes, :protected_attributes
 
-  def initialize parameters = nil
-    self.field = parameters[:field]
-    self.another_field = parameters[:another_field]
-    self.password = parameters[:password]
-    self.password_confirmation = parameters[:password_confirmation]
+  def initialize params={}
+    params ||= {}
+    params.each {|k,v| send "#{k}=", v }
   end
 end
 
@@ -118,7 +116,7 @@ describe Object::Factory, "creating simple instances" do
   end
 
   it "should create an instance of the given class with the given parameters" do
-    @created_instance = Object.factory.create_a(TestClass, :some => :values)
+    @created_instance = Object.factory.create_a(TestClass, :field => :value)
     @created_instance.class.should == TestClass
   end
 
@@ -436,7 +434,7 @@ describe Object::Factory, "generating sequential numbers" do
   end
 
   it "should use the shortcut to generate a sequential number" do
-    Object.factory.should_receive(:next_number).and_return(1)
+    Object.factory.should_receive(:a_number).and_return(1)
     number = a_number
   end
 end
