@@ -219,6 +219,22 @@ describe Object::Factory, "creating instances with overriden values using a bloc
       end
       @instance.firstname.should == "lannister"
     end
+
+    context "with helper methods" do
+      it "should allow you to override generated values with a block" do
+        @instance = a TestClass do |tc|
+          tc.field = "black sheep"
+        end
+        @instance.field.should be == "black sheep"
+      end
+
+      it "should allow you to override generated values when creating using a block" do
+        @instance = a_saved User do |u|
+          u.firstname = "black"
+        end
+        @instance.firstname.should be == "black"
+      end
+    end
   end
 
   context "with an inline block" do
@@ -232,8 +248,19 @@ describe Object::Factory, "creating instances with overriden values using a bloc
       @instance = Object.factory.create_and_save_a(User) { |tc| tc.firstname = "lannister" }
       @instance.firstname.should == "lannister"
     end
-  end
 
+    context "with helper methods" do
+      it "should allow you to override generated values with a block" do
+        @instance = a(TestClass) {|tc| tc.field = "black sheep" }
+        @instance.field.should be == "black sheep"
+      end
+
+      it "should allow you to override generated values when creating using a block" do
+        @instance = a_saved(User) {|u| u.firstname = "black" }
+        @instance.firstname.should be == "black"
+      end
+    end
+  end
 end
 
 describe Object::Factory, "creating instances with confirmed values" do
