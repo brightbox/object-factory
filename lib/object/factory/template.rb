@@ -35,6 +35,11 @@ class Object
         @set ||= {}
       end
 
+      def clean_up
+        @clean_up = true if @clean_up.nil?
+        @clean_up
+      end
+
       EMAIL_ADDRESS_LAMBDA = lambda { 6.random_letters + '@' +  10.random_letters + '.com' }
       IP_ADDRESS_LAMBDA = lambda { Array.new(4) { 1.random_number(:to => 255) }.join(".") }
 

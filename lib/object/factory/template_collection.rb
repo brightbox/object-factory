@@ -15,10 +15,13 @@ class Object
       end
 
       # Returns all the classes to delete records for when Factory#clean_up is invoked
-      # 
+      # Only returns those that respond to the right methods
+      #
       # @return Array
       def classes_for_cleaning
-        __getobj__.to_a.select {|t| t.clean_up }.map(&:klass)
+        __getobj__.to_a.select do |t|
+          t.clean_up && t.klass.respond_to?(:with_exclusive_scope) && t.klass.respond_to?(:delete_all)
+        end.map(&:klass)
       end
 
     end
