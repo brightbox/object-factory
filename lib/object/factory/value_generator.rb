@@ -16,6 +16,7 @@ class Object
       def value_for klass, field
         "#{klass.name.to_s}-#{field.to_s}-#{unique_integer}"
       end
+
     end
   end
 end

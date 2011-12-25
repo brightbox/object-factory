@@ -1,6 +1,7 @@
 require "delegate"
 require "singleton"
 require "forwardable"
+require "rujitsu"
 
 class Object
 

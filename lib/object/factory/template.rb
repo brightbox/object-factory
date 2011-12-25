@@ -4,7 +4,7 @@ class Object
       extend Forwardable
       def_delegator :generator, :value_for
 
-      attr_accessor :klass, :generate, :set, :auto_generate, :auto_confirm, :after_create
+      attr_accessor :klass, :generate, :set, :auto_generate, :auto_confirm, :generate_email_address, :generate_ip_address, :after_create
 
       autoload :InstanceBuilder, "object/factory/template/instance_builder"
 
@@ -35,9 +35,24 @@ class Object
         @set ||= {}
       end
 
+      EMAIL_ADDRESS_LAMBDA = lambda { 6.random_letters + '@' +  10.random_letters + '.com' }
+      IP_ADDRESS_LAMBDA = lambda { Array.new(4) { 1.random_number(:to => 255) }.join(".") }
+
+      # This includes both the :generate specified params, and :generate_email_address, etc ones
+      def generated_params
+        h = {}
+        Array(generate_email_address).each do |field|
+          h[field] = EMAIL_ADDRESS_LAMBDA
+        end
+        Array(generate_ip_address).each do |field|
+          h[field] = IP_ADDRESS_LAMBDA
+        end
+        generate.merge(h)
+      end
+
       def default_params
         h = set.dup
-        generate.each do |k,blk|
+        generated_params.each do |k,blk|
           h[k] = blk.call
         end
         h.merge!(auto_generated_params)
