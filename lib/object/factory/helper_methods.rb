@@ -12,23 +12,30 @@ class Object
         klass.extend ClassMethods
       end
 
-      def a *args
-        Object.factory.create_a *args
+      # Define the helper methods this way because I'm lazy and they all just proxy forward
+      # to Object.factory anyway. Handles blocks being passed through, and optimises the methods
+      # if no block is passed.
+      {
+        :a => :create_a,
+        :an => :create_a,
+        :a_saved => :create_and_save_a,
+        :a_number => :a_number,
+        :when_creating_a => :when_creating_a,
+        :when_creating_an => :when_creating_a
+      }.each do |source, destination|
+        class_eval <<-EOF
+          def #{source} *args
+            # Possibly an optimisation too far, but oh well. Doesn't pass block through if none
+            # is given to the top method.
+            if block_given?
+              block = Proc.new
+              Object.factory.#{destination} *args, &block
+            else
+              Object.factory.#{destination} *args
+            end
+          end
+        EOF
       end
-      alias an a
-
-      def a_saved *args
-        Object.factory.create_and_save_a *args
-      end
-
-      def a_number *args
-        Object.factory.a_number *args
-      end
-
-      def when_creating_a *args
-        Object.factory.when_creating_a *args
-      end
-      alias when_creating_an when_creating_a
 
     end
   end
