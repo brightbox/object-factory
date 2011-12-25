@@ -3,10 +3,8 @@ require "singleton"
 require "forwardable"
 require "rujitsu"
 
+require "object/factory"
+
 class Object
-
-  autoload :Factory, "object/factory"
-
   include Factory::HelperMethods
-
 end
