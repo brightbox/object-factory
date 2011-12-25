@@ -472,29 +472,8 @@ describe Object::Factory, "cleaning up ActiveRecord models" do
   end
 
   it "should delete all instances for registered classes" do
-    # Quack like ActiveRecord::Base as if our lives depended on it.
-    # Easier than just depending on it? Probably.
-    [TestClass, AnotherTestClass].each do |klass|
-      klass.class_eval do
-        def self.respond_to? meffod, *args
-          return true if meffod == :with_exclusive_scope || meffod == :delete_all
-          super
-        end
-        def self.with_exclusive_scope
-          yield
-        end
-      end
-      ancestors = klass.ancestors.dup
-      klass.stub!(:ancestors).and_return(ancestors|[ActiveRecord::Base])
-    end
-
-    TestClass.ancestors.should include(ActiveRecord::Base)
-    TestClass.respond_to?(:with_exclusive_scope).should be_true
-    TestClass.respond_to?(:delete_all).should be_true
-
-    AnotherTestClass.ancestors.should include(ActiveRecord::Base)
-    AnotherTestClass.respond_to?(:with_exclusive_scope).should be_true
-    AnotherTestClass.respond_to?(:delete_all).should be_true
+    setup_class_for_cleanup TestClass
+    setup_class_for_cleanup AnotherTestClass
 
     Object.factory.when_creating_a TestClass, :auto_confirm => :password, :clean_up => true
     Object.factory.when_creating_an AnotherTestClass, :clean_up => true
@@ -504,4 +483,48 @@ describe Object::Factory, "cleaning up ActiveRecord models" do
 
     Object.factory.clean_up
   end
+
+  it "should default to cleaning up registered classes" do
+    setup_class_for_cleanup TestClass
+    setup_class_for_cleanup AnotherTestClass
+
+    Object.factory.when_creating_a TestClass, :auto_confirm => :password
+    Object.factory.when_creating_an AnotherTestClass
+
+    TestClass.should_receive(:delete_all).and_return(0)
+    AnotherTestClass.should_receive(:delete_all).and_return(0)
+
+    Object.factory.clean_up
+  end
+
+  it "should not clean up classes told not to" do
+    Object.factory.when_creating_a TestClass, :auto_confirm => :password, :clean_up => false
+    Object.factory.when_creating_an AnotherTestClass, :clean_up => false
+
+    TestClass.should_not_receive(:delete_all)
+    AnotherTestClass.should_not_receive(:delete_all)
+
+    Object.factory.clean_up
+  end
+
+  it "should only clean up classes that handle the cleanup methods" do
+    setup_class_for_cleanup TestClass
+
+    Object.factory.when_creating_a TestClass, :auto_confirm => :password, :clean_up => true
+    Object.factory.when_creating_an AnotherTestClass, :clean_up => true
+
+    TestClass.should_receive(:delete_all).and_return(0)
+    AnotherTestClass.should_not_receive(:delete_all)
+
+    Object.factory.clean_up
+  end
+
+  def setup_class_for_cleanup klass
+    klass.stub!(:respond_to?).with(:with_exclusive_scope).and_return(true)
+    klass.stub!(:respond_to?).with(:delete_all).and_return(true)
+
+    klass.respond_to?(:with_exclusive_scope).should be_true
+    klass.respond_to?(:delete_all).should be_true
+  end
+
 end
