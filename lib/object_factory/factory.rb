@@ -4,13 +4,11 @@ require "forwardable"
 require "rujitsu"
 
 module ObjectFactory
-    autoload :InstanceBuilder, "object_factory/instance_builder"
+  autoload :InstanceBuilder, "object_factory/instance_builder"
   autoload :TemplateCollection, "object_factory/template_collection"
   autoload :Template,           "object_factory/template"
   autoload :ValueGenerator,     "object_factory/value_generator"
-end
 
-module ObjectFactory
   class Factory
     include Singleton
     extend Forwardable
