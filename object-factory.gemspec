@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "object_factory/factory/version"
+require "object_factory/version"
 
 Gem::Specification.new do |s|
   s.name        = "object-factory"

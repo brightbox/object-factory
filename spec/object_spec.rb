@@ -83,16 +83,16 @@ describe Object, "with RSpec/Rails extensions" do
   end
 end
 
-describe ObjectFactory::Factory::ValueGenerator do
+describe ObjectFactory::ValueGenerator do
   it "should generate a unique string value for a given class and field" do
-    @generator = ObjectFactory::Factory::ValueGenerator.new
+    @generator = ObjectFactory::ValueGenerator.new
 
     @value = @generator.value_for TestClass, :field
     @value.should match(/TestClass\-field\-(\d+)/)
   end
 
   it "should generate a unique integer value" do
-    @generator = ObjectFactory::Factory::ValueGenerator.new
+    @generator = ObjectFactory::ValueGenerator.new
 
     @first_value = @generator.unique_integer
     @second_value = @generator.unique_integer
