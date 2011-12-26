@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "object/factory/version"
+require "object_factory/factory/version"
 
 Gem::Specification.new do |s|
   s.name        = "object-factory"
-  s.version     = Object::Factory::VERSION
+  s.version     = ObjectFactory::Factory::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Brightbox Systems Ltd"]
   s.email       = %q{hello@brightbox.co.uk}
