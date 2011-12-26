@@ -4,7 +4,7 @@ require "object_factory/version"
 
 Gem::Specification.new do |s|
   s.name        = "object-factory"
-  s.version     = ObjectFactory::Factory::VERSION
+  s.version     = ObjectFactory::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Brightbox Systems Ltd"]
   s.email       = %q{hello@brightbox.co.uk}
