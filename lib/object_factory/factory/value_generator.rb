@@ -1,4 +1,4 @@
-class Object
+module ObjectFactory
   class Factory
 
     # A simple class that generates unique values

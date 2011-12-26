@@ -1,10 +1,10 @@
-class Object
+module ObjectFactory
   class Factory
     module HelperMethods
 
       module ClassMethods
         def factory
-          Object::Factory.instance
+          ObjectFactory::Factory.instance
         end
       end
 
@@ -40,3 +40,5 @@ class Object
     end
   end
 end
+
+Object.__send__ :include, ObjectFactory::Factory::HelperMethods

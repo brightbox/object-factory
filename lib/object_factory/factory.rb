@@ -1,12 +1,16 @@
-class Object
+require "delegate"
+require "singleton"
+require "forwardable"
+require "rujitsu"
+
+module ObjectFactory
   class Factory
     include Singleton
     extend Forwardable
 
-    autoload :HelperMethods,      "object/factory/helper_methods"
-    autoload :TemplateCollection, "object/factory/template_collection"
-    autoload :Template,           "object/factory/template"
-    autoload :ValueGenerator,     "object/factory/value_generator"
+    autoload :TemplateCollection, "object_factory/factory/template_collection"
+    autoload :Template,           "object_factory/factory/template"
+    autoload :ValueGenerator,     "object_factory/factory/value_generator"
 
     def_delegators :generator, :value_for, :unique_integer, :next_number, :a_number
 

@@ -71,7 +71,7 @@ end
 describe Object, "with RSpec/Rails extensions" do
   describe "accessing the factory" do
     it "should return an object factory" do
-      Object.factory.class.should == Object::Factory
+      Object.factory.class.should == ObjectFactory::Factory
     end
 
     it "should use a single instance" do
@@ -83,16 +83,16 @@ describe Object, "with RSpec/Rails extensions" do
   end
 end
 
-describe Object::Factory::ValueGenerator do
+describe ObjectFactory::Factory::ValueGenerator do
   it "should generate a unique string value for a given class and field" do
-    @generator = Object::Factory::ValueGenerator.new
+    @generator = ObjectFactory::Factory::ValueGenerator.new
 
     @value = @generator.value_for TestClass, :field
     @value.should match(/TestClass\-field\-(\d+)/)
   end
 
   it "should generate a unique integer value" do
-    @generator = Object::Factory::ValueGenerator.new
+    @generator = ObjectFactory::Factory::ValueGenerator.new
 
     @first_value = @generator.unique_integer
     @second_value = @generator.unique_integer
@@ -102,7 +102,7 @@ describe Object::Factory::ValueGenerator do
 
 end
 
-describe Object::Factory, "creating simple instances" do
+describe ObjectFactory::Factory, "creating simple instances" do
 
   before :each do
     Object.factory.reset
@@ -140,7 +140,7 @@ describe Object::Factory, "creating simple instances" do
   it "should raise an exception if the auto-saved object cannot be saved" do
     lambda {
       @created_instance = a_saved(User, :login => nil)
-    }.should raise_error(Object::Factory::CannotSaveError)
+    }.should raise_error(ObjectFactory::Factory::CannotSaveError)
   end
 
   it "should allow 'a_saved' as a short-cut to creating and saving an object" do
@@ -149,7 +149,7 @@ describe Object::Factory, "creating simple instances" do
   end
 end
 
-describe Object::Factory, "configuring a class" do
+describe ObjectFactory::Factory, "configuring a class" do
   it "should allow 'when_creating_a' as a short-cut to configuring a class" do
     Object.factory.should_receive(:when_creating_a)
 
@@ -157,7 +157,7 @@ describe Object::Factory, "configuring a class" do
   end
 end
 
-describe Object::Factory, "creating instances with generated values" do
+describe ObjectFactory::Factory, "creating instances with generated values" do
 
   before :each do
     Object.factory.reset
@@ -198,7 +198,7 @@ describe Object::Factory, "creating instances with generated values" do
 
 end
 
-describe Object::Factory, "creating instances with overriden values using a block" do
+describe ObjectFactory::Factory, "creating instances with overriden values using a block" do
   before do
     Object.factory.when_creating_a TestClass, :set => {:field => "fred"}
     create_tables()
@@ -263,7 +263,7 @@ describe Object::Factory, "creating instances with overriden values using a bloc
   end
 end
 
-describe Object::Factory, "creating instances with confirmed values" do
+describe ObjectFactory::Factory, "creating instances with confirmed values" do
 
   before :each do
     Object.factory.reset
@@ -325,7 +325,7 @@ describe Object::Factory, "creating instances with confirmed values" do
   end
 end
 
-describe Object::Factory, "setting static values" do
+describe ObjectFactory::Factory, "setting static values" do
   before :each do
     Object.factory.reset
   end
@@ -345,7 +345,7 @@ describe Object::Factory, "setting static values" do
   end
 end
 
-describe Object::Factory, "generating email addresses" do
+describe ObjectFactory::Factory, "generating email addresses" do
   before :each do
     Object.factory.reset
   end
@@ -366,7 +366,7 @@ describe Object::Factory, "generating email addresses" do
   end
 end
 
-describe Object::Factory, "generating ip addresses" do
+describe ObjectFactory::Factory, "generating ip addresses" do
   before :each do
     Object.factory.reset
   end
@@ -387,7 +387,7 @@ describe Object::Factory, "generating ip addresses" do
   end
 end
 
-describe Object::Factory, "invoking after create callback" do
+describe ObjectFactory::Factory, "invoking after create callback" do
   before(:each) do
     Object.factory.reset
   end
@@ -407,7 +407,7 @@ describe Object::Factory, "invoking after create callback" do
   end
 end
 
-describe Object::Factory, "Should bypass mass-assignment protection" do
+describe ObjectFactory::Factory, "Should bypass mass-assignment protection" do
   before(:each) do
     Object.factory.reset
     create_tables()
@@ -434,7 +434,7 @@ describe Object::Factory, "Should bypass mass-assignment protection" do
   end
 end
 
-describe Object::Factory, "using lambdas to generate values" do
+describe ObjectFactory::Factory, "using lambdas to generate values" do
   before :each do
     Object.factory.reset
   end
@@ -448,7 +448,7 @@ describe Object::Factory, "using lambdas to generate values" do
   end
 end
 
-describe Object::Factory, "generating sequential numbers" do
+describe ObjectFactory::Factory, "generating sequential numbers" do
   before :each do
     Object.factory.reset
   end
@@ -466,7 +466,7 @@ describe Object::Factory, "generating sequential numbers" do
   end
 end
 
-describe Object::Factory, "cleaning up ActiveRecord models" do
+describe ObjectFactory::Factory, "cleaning up ActiveRecord models" do
   before :each do
     Object.factory.reset
   end

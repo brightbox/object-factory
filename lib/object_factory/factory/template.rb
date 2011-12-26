@@ -1,4 +1,4 @@
-class Object
+module ObjectFactory
   class Factory
     class Template
       extend Forwardable
@@ -6,7 +6,7 @@ class Object
 
       attr_accessor :klass, :generate, :set, :auto_generate, :auto_confirm, :generate_email_address, :generate_ip_address, :clean_up, :after_create
 
-      autoload :InstanceBuilder, "object/factory/template/instance_builder"
+      autoload :InstanceBuilder, "object_factory/factory/template/instance_builder"
 
       def initialize opts={}
         opts ||= {}

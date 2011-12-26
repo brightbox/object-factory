@@ -1,4 +1,4 @@
-class Object
+module ObjectFactory
   class Factory
     class Template
       class InstanceBuilder

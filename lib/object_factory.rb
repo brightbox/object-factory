@@ -1,10 +1,4 @@
-require "delegate"
-require "singleton"
-require "forwardable"
-require "rujitsu"
-
-require "object/factory"
-
-class Object
-  include Factory::HelperMethods
-end
+require "object_factory/factory"
+# This includes methods into Object's ancestor chain, require the factory
+# directly as above if you don't want that mixin to happen
+require "object_factory/factory/helper_methods"
