@@ -16,7 +16,7 @@ module ObjectFactory
     end
 
     def create_params
-     @create_params ||= template.default_params.merge(params)
+     @create_params ||= template.create_params(params)
     end
 
     def set_protected_attributes

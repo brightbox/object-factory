@@ -49,15 +49,22 @@ module ObjectFactory
       Array(generate_ip_address).each do |field|
         h[field] = IP_ADDRESS_LAMBDA
       end
-      generate.merge(h)
+      h = generate.merge(h)
+      h.delete_if {|k,v| set.has_key?(k) }
     end
 
-    def default_params
-      h = set.dup
+    # Figures out all the params required to be passed to the instance at create
+    # time. bespoke_params are params passed when calling a(_saved)() and take priority
+    # over those specified through the factory.
+    def create_params bespoke_params={}
+      bespoke_params ||= {}
+      h = set.dup.merge(bespoke_params)
       generated_params.each do |k,blk|
+        # Make sure we don't call the block if the param is going to be overridden anyway
+        next if h.has_key?(k)
         h[k] = blk.call
       end
-      h.merge!(auto_generated_params)
+      h = auto_generated_params.merge(h)
       Array(auto_confirm).each do |field|
         val = value_for(klass, field)
         confirm_field = :"#{field}_confirmation"
