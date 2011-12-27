@@ -446,6 +446,15 @@ describe ObjectFactory::Factory, "using lambdas to generate values" do
     @instance.field.should == 'poop'
     @instance.another_field.should == Date.today.to_s
   end
+
+  it "should not call the lambda when the parameter is overridden" do
+    obj = mock Object
+    Object.factory.when_creating_a TestClass, :generate => {:field => lambda { obj.zomg! } }
+
+    obj.should_not_receive(:zomg!)
+    @instance = Object.factory.create_a TestClass, :field => "sheep"
+    @instance.field.should be == "sheep"
+  end
 end
 
 describe ObjectFactory::Factory, "generating sequential numbers" do
