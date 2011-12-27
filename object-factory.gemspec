@@ -4,7 +4,7 @@ require "object_factory/version"
 
 Gem::Specification.new do |s|
   s.name        = "object-factory"
-  s.version     = Object::Factory::VERSION
+  s.version     = ObjectFactory::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Brightbox Systems Ltd"]
   s.email       = %q{hello@brightbox.co.uk}
@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency "rujitsu"
 
   s.add_development_dependency "rake"
-  s.add_development_dependency "rspec", "< 2.0"
+  s.add_development_dependency "rspec", "> 2.0"
   s.add_development_dependency 'activerecord', '> 2.0'
   s.add_development_dependency 'sqlite3'
 end
