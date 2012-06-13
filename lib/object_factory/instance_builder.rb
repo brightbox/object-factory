@@ -6,9 +6,12 @@ module ObjectFactory
       opts ||= {}
       opts.each {|k,v| send "#{k}=", v }
 
-      self.instance = template.klass.new(mass_assignable_params)
-
-      set_protected_attributes
+      if template.klass.respond_to?(:accessible_attributes)
+        self.instance = template.klass.new(mass_assignable_params)
+        set_protected_attributes
+      else
+        self.instance = template.klass.new(create_params)
+      end
       block.call(instance) if block
     end
 
