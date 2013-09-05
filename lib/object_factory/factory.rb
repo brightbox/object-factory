@@ -42,9 +42,13 @@ module ObjectFactory
       templates.template_for(klass).create_instance_with(params, &block)
     end
 
-    def create_and_save_a *args, &block
-      instance = create_a(*args, &block)
+    def create_and_save_a klass, params = {}, &block
+      template = templates.template_for(klass)
+      instance = template.create_instance_with(params, &block)
       raise CannotSaveError, instance.errors.inspect unless instance.save
+      if template.after_create
+        template.after_create.call(instance)
+      end
       instance
     end
 

@@ -19,9 +19,7 @@ module ObjectFactory
     end
 
     def create_instance_with params={}, &block
-      InstanceBuilder.new(:params => params, :template => self, &block).instance.tap do |i|
-        after_create.call(i) if after_create
-      end
+      InstanceBuilder.new(:params => params, :template => self, &block).instance
     end
 
     def generate
