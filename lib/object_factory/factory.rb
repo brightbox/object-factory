@@ -50,6 +50,10 @@ module ObjectFactory
     def create_and_save_a klass, params = {}, &block
       template = templates.template_for(klass)
       instance = template.create_instance_with(params, &block)
+      if template.after_build
+        template.after_build.call(instance)
+      end
+
       raise CannotSaveError, instance.errors.inspect unless instance.save
       if template.after_create
         template.after_create.call(instance)

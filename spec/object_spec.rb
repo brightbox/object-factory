@@ -423,6 +423,20 @@ describe ObjectFactory::Factory, "invoking after build callback" do
     @instance = Object.factory.create_a AnotherTestClass
     t.should_not be_nil
   end
+
+  it "should work when creating an object as well" do
+    t = nil
+    Object.factory.when_creating_a AnotherTestClass, :after_build => lambda { |u|
+      t = u
+    }
+
+    @test_instance = AnotherTestClass.new()
+    AnotherTestClass.should_receive(:new).with({}).and_return(@test_instance)
+    @test_instance.should_receive(:save).and_return(true)
+
+    @instance = Object.factory.create_and_save_a AnotherTestClass
+    t.should_not be_nil
+  end
 end
 
 describe ObjectFactory::Factory, "Should bypass mass-assignment protection" do
