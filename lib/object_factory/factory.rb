@@ -39,7 +39,12 @@ module ObjectFactory
     alias when_creating_an when_creating_a
 
     def create_a klass, params={}, &block
-      templates.template_for(klass).create_instance_with(params, &block)
+      template = templates.template_for(klass)
+      instance = template.create_instance_with(params, &block)
+      if template.after_build
+        template.after_build.call(instance)
+      end
+      instance
     end
 
     def create_and_save_a klass, params = {}, &block

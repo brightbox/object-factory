@@ -407,6 +407,24 @@ describe ObjectFactory::Factory, "invoking after create callback" do
   end
 end
 
+describe ObjectFactory::Factory, "invoking after build callback" do
+  before(:each) do
+    Object.factory.reset
+  end
+
+  it "should invoke the callback after building the object" do
+    t = nil
+    Object.factory.when_creating_a AnotherTestClass, :after_build => lambda { |u|
+      t = u
+    }
+
+    @test_instance = AnotherTestClass.new()
+    AnotherTestClass.should_receive(:new).with({}).and_return(@test_instance)
+    @instance = Object.factory.create_a AnotherTestClass
+    t.should_not be_nil
+  end
+end
+
 describe ObjectFactory::Factory, "Should bypass mass-assignment protection" do
   before(:each) do
     Object.factory.reset

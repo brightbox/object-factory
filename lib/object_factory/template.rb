@@ -4,6 +4,7 @@ module ObjectFactory
     def_delegator :generator, :value_for
 
     attr_accessor :klass, :generate, :set, :auto_generate, :auto_confirm, :generate_email_address, :generate_ip_address, :clean_up, :after_create
+    attr_accessor :after_build
 
     def initialize opts={}
       opts ||= {}
